@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DEVSearch</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="url-bar">
+      <button id="backBtn">⟵</button>
+      <button id="forwardBtn">⟶</button>
+      <form id="urlForm">
+        <input type="text" id="urlInput" placeholder="Escribe una URL..." />
+        <button type="submit">Ir</button>
+      </form>
+    </div>
+
+    <div id="homeContainer" class="container">
+      <h1 class="logo">Dev<span>Search</span></h1>
+
+      <form id="searchForm">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Buscar o escribir en Google..."
+        />
+        <button type="submit">🔍</button>
+      </form>
+
+      <div class="shortcuts">
+        <a href="https://www.frsr.utn.edu.ar/" target="_blank">UTNFRS</a>
+        <a href="https://github.com/dwc1970" target="_blank"
+          >REPOSITORIO-GITHUB</a
+        >
+        <a href="https://www.disneyplus.com/en-gb/home" target="_blank"
+          >DISNEYPLUS</a
+        >
+        <a href="https://www.facebook.com" target="_blank">Facebook</a>
+      </div>
+    </div>
+
+    <iframe id="contentFrame" src="about:blank"></iframe>
+
+    <script>
+      const homeContainer = document.getElementById("homeContainer");
+      const contentFrame = document.getElementById("contentFrame");
+
+      // ... (El código de búsqueda y URL se debe adaptar) ...
+
+      // Función para cargar una URL en el IFRAME y ocultar el contenedor principal
+      function loadContent(url) {
+        contentFrame.src = url;
+        homeContainer.style.display = "none"; // Oculta el contenido inicial
+        contentFrame.style.display = "block"; // Muestra el iframe
+        urlInput.value = url; // Opcional: Actualiza la barra de URL
+      }
+
+      // --- Búsqueda estilo Google ---
+      const searchForm = document.getElementById("searchForm");
+      const searchInput = document.getElementById("searchInput");
+
+      searchForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let query = searchInput.value.trim();
+        if (query === "") return;
+
+        let url;
+        // Lógica de URL/Búsqueda
+        if (query.startsWith("http://") || query.startsWith("https://")) {
+          url = query;
+        } else if (query.includes(".")) {
+          url = "http://" + query;
+        } else {
+          url = "https://www.google.com/search?q=" + encodeURIComponent(query);
+        }
+
+        loadContent(url);
+      });
+
+      // --- Barra de URL ---
+      const urlForm = document.getElementById("urlForm");
+      const urlInput = document.getElementById("urlInput");
+
+      urlForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let url = urlInput.value.trim();
+        if (url === "") return;
+
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+          url = "http://" + url;
+        }
+
+        loadContent(url);
+      });
+
+      // --- Botones de navegación (Ahora aplicados al IFRAME) ---
+      document.getElementById("backBtn").addEventListener("click", () => {
+        // Usa el historial del IFRAME, no el del navegador principal
+        contentFrame.contentWindow.history.back();
+        // Opcional: Actualizar urlInput con la nueva URL
+      });
+
+      document.getElementById("forwardBtn").addEventListener("click", () => {
+        // Usa el historial del IFRAME
+        contentFrame.contentWindow.history.forward();
+        // Opcional: Actualizar urlInput con la nueva URL
+      });
+    </script>
+  </body>
+</html>
